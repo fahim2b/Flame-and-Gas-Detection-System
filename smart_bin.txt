@@ -1,0 +1,54 @@
+#include <Servo.h>
+
+#define TRIG_PIN  D1   // GPIO5
+#define ECHO_PIN  D2   // GPIO4
+#define SERVO_PIN D5   // GPIO14
+
+#define DIST_THRESHOLD 40  // cm
+
+Servo myServo;
+
+void setup() {
+  Serial.begin(9600);
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+
+  myServo.attach(SERVO_PIN);
+  myServo.write(0);   // start position
+}
+
+float readDistanceCM() {
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000);
+  if (duration == 0) return -1;
+
+  return duration * 0.0343 / 2;
+}
+
+void loop() {
+  float distance = readDistanceCM();
+
+  if (distance > 0) {
+    Serial.print("Distance: ");
+    Serial.print(distance);
+    Serial.println(" cm");
+
+    if (distance <= DIST_THRESHOLD) {
+      myServo.write(180);
+      delay(1000);
+    } else {
+      myServo.write(0);
+    }
+  } else {
+    Serial.println("Out of range");
+  }
+
+  delay(200);
+}
