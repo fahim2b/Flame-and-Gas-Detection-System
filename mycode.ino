@@ -16,7 +16,7 @@
 
 // ---------------- WiFi ----------------
 char ssid[] = "TP-Link_8360";
-char pass[] = "fahimislive";
+char pass[] = "0000000000";
 
 // ---------------- Objects ----------------
 LiquidCrystal_I2C lcd(0x27, 16, 2);
